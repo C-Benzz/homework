@@ -7,7 +7,7 @@ import (
 )
 
 var rootCmd = &cobra.Command{
-	Use:   "http",
+	Use:   "httpcli",
 	Short: "Http cli",
 	Long:  `HTTP Client Command-line program`,
 }
