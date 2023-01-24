@@ -19,35 +19,41 @@ var postCmd = &cobra.Command{
 	Short: "postHttp",
 	Long:  `post: send a POST request to a given URL`,
 	Run: func(cmd *cobra.Command, args []string) {
-		postHttp()
-		fmt.Println("post called")
+		flagJSON, err := cmd.Flags().GetString("json")
+		if err != nil {
+			log.Fatal(err)
+		}
+		input := map[string]interface{}{}
+		json.Unmarshal([]byte(flagJSON), &input) //change json to map
+		postHttp(input)
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(postCmd)
+	postCmd.PersistentFlags().String("json", "", "Construct JSON body of the POST request.")
 }
 
 type Post struct {
 	Name string `json:"name"`
 }
 
-func postHttp() {
-	p := Post{
-		Name: "Hello",
-	}
+var p = fmt.Println
+
+func postHttp(body map[string]interface{}) {
 	var buf bytes.Buffer
-	err := json.NewEncoder(&buf).Encode(p)
+	err := json.NewEncoder(&buf).Encode(body)
 	if err != nil {
 		log.Fatal(err)
 	}
-	resp, err := http.Post("https://httpbin.org/post", "", &buf)
+	p(body)
+	res, err := http.Post("https://httpbin.org/post", "application/json", &buf)
 	if err != nil {
 		log.Fatal(err)
 	}
-	var res map[string]interface{}
+	var resp map[string]any
 
-	json.NewDecoder(resp.Body).Decode(&res)
+	json.NewDecoder(res.Body).Decode(&resp)
 
-	fmt.Println(res)
+	fmt.Printf("%s\n", resp)
 }
