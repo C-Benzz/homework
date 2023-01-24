@@ -38,22 +38,17 @@ type Post struct {
 	Name string `json:"name"`
 }
 
-var p = fmt.Println
-
 func postHttp(body map[string]interface{}) {
 	var buf bytes.Buffer
 	err := json.NewEncoder(&buf).Encode(body)
 	if err != nil {
 		log.Fatal(err)
 	}
-	p(body)
 	res, err := http.Post("https://httpbin.org/post", "application/json", &buf)
 	if err != nil {
 		log.Fatal(err)
 	}
 	var resp map[string]any
-
 	json.NewDecoder(res.Body).Decode(&resp)
-
 	fmt.Printf("%s\n", resp)
 }

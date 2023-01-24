@@ -19,35 +19,37 @@ var putCmd = &cobra.Command{
 	Short: "putHttp",
 	Long:  `put: send a PUT request to a given URL.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		flag, err := cmd.Flags().GetStringSlice("json")
+		flag, err := cmd.Flags().GetString("json")
 		if err != nil {
 			log.Fatal(err)
 		}
-		putHttp(flag)
+		input := map[string]any{}
+		json.Unmarshal([]byte(flag), &input)
+		putHttp(input)
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(putCmd)
-	putCmd.PersistentFlags().StringSlice("json", []string{}, "Construct JSON body of the PUT request.")
+	putCmd.PersistentFlags().String("json", "", "Construct JSON body of the PUT request.")
 }
 
-func putHttp(body []string) {
+func putHttp(body map[string]any) {
 	var buf bytes.Buffer
 	err := json.NewEncoder(&buf).Encode(body)
 	if err != nil {
 		log.Fatal(err)
 	}
-	res, err := http.NewRequest("PUT", "https://httpbin.org/put", &buf)
+	req, err := http.NewRequest("PUT", "https://httpbin.org/put", &buf)
 	if err != nil {
 		log.Fatal(err)
 	}
-	res.Body.Close()
-	// if res.Response.StatusCode > 299 {
-	// 	log.Fatalf("Response failed with status code: %d and\nbody: %s\n", res.StatusCode, body)
-	// }
-	if err != nil {
-		log.Fatal(err)
+	client := &http.Client{}
+	res, err1 := client.Do(req)
+	if err1 != nil {
+		log.Fatal(err1)
 	}
-	fmt.Printf("%s", res.Body)
+	var resp map[string]any
+	json.NewDecoder(res.Body).Decode(&resp)
+	fmt.Printf("%v\n", resp)
 }
