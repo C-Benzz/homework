@@ -12,7 +12,12 @@ import (
 
 // Create is the resolver for the Create field.
 func (r *mutationResolver) Create(ctx context.Context, input model.NewPokemon) (*model.Pokemon, error) {
-	panic(fmt.Errorf("not implemented: Create - Create"))
+	// newPokemon := model.Pokemon{
+	// 	Name:        input.Name,
+	// 	Description: input.Description,
+
+	// }
+	panic(fmt.Errorf("not implemented: Update - Update"))
 }
 
 // Update is the resolver for the Update field.

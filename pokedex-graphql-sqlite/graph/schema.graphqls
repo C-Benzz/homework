@@ -5,17 +5,26 @@
 type Pokemon {
   name: String!
   description: String
+  category: String!
   type: [PokemonType!]!
+  abilities: [String!]!
 }
 
-type PokemonType{
-  category: String!
-  abilities: [String]
+enum PokemonType{
+  Bug
+  Flying
+  Fire
+  Grass
+  Water
+  Poison
 }
 
 input NewPokemon{
   name: String
   description: String!
+  category: String
+  type: [PokemonType!]
+  abilities: [String!]
 }
 
 type Query{

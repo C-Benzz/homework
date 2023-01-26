@@ -2,18 +2,73 @@
 
 package model
 
+import (
+	"fmt"
+	"io"
+	"strconv"
+)
+
 type NewPokemon struct {
-	Name        *string `json:"name"`
-	Description string  `json:"description"`
+	Name        *string       `json:"name"`
+	Description string        `json:"description"`
+	Category    *string       `json:"category"`
+	Type        []PokemonType `json:"type"`
+	Abilities   []string      `json:"abilities"`
 }
 
 type Pokemon struct {
-	Name        string         `json:"name"`
-	Description *string        `json:"description"`
-	Type        []*PokemonType `json:"type"`
+	Name        string        `json:"name"`
+	Description *string       `json:"description"`
+	Category    string        `json:"category"`
+	Type        []PokemonType `json:"type"`
+	Abilities   []string      `json:"abilities"`
 }
 
-type PokemonType struct {
-	Category  string    `json:"category"`
-	Abilities []*string `json:"abilities"`
+type PokemonType string
+
+const (
+	PokemonTypeBug    PokemonType = "Bug"
+	PokemonTypeFlying PokemonType = "Flying"
+	PokemonTypeFire   PokemonType = "Fire"
+	PokemonTypeGrass  PokemonType = "Grass"
+	PokemonTypeWater  PokemonType = "Water"
+	PokemonTypePoison PokemonType = "Poison"
+)
+
+var AllPokemonType = []PokemonType{
+	PokemonTypeBug,
+	PokemonTypeFlying,
+	PokemonTypeFire,
+	PokemonTypeGrass,
+	PokemonTypeWater,
+	PokemonTypePoison,
+}
+
+func (e PokemonType) IsValid() bool {
+	switch e {
+	case PokemonTypeBug, PokemonTypeFlying, PokemonTypeFire, PokemonTypeGrass, PokemonTypeWater, PokemonTypePoison:
+		return true
+	}
+	return false
+}
+
+func (e PokemonType) String() string {
+	return string(e)
+}
+
+func (e *PokemonType) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("enums must be strings")
+	}
+
+	*e = PokemonType(str)
+	if !e.IsValid() {
+		return fmt.Errorf("%s is not a valid PokemonType", str)
+	}
+	return nil
+}
+
+func (e PokemonType) MarshalGQL(w io.Writer) {
+	fmt.Fprint(w, strconv.Quote(e.String()))
 }
