@@ -10,14 +10,24 @@ import (
 	"pokedex-graphql/graph/model"
 )
 
-// CreateTodo is the resolver for the createTodo field.
-func (r *mutationResolver) CreateTodo(ctx context.Context, input model.NewTodo) (*model.Todo, error) {
-	panic(fmt.Errorf("not implemented: CreateTodo - createTodo"))
+// Create is the resolver for the Create field.
+func (r *mutationResolver) Create(ctx context.Context, input model.NewPokemon) (*model.Pokemon, error) {
+	panic(fmt.Errorf("not implemented: Create - Create"))
 }
 
-// Todos is the resolver for the todos field.
-func (r *queryResolver) Todos(ctx context.Context) ([]*model.Todo, error) {
-	panic(fmt.Errorf("not implemented: Todos - todos"))
+// Update is the resolver for the Update field.
+func (r *mutationResolver) Update(ctx context.Context, input model.NewPokemon) (*model.Pokemon, error) {
+	panic(fmt.Errorf("not implemented: Update - Update"))
+}
+
+// Delete is the resolver for the Delete field.
+func (r *mutationResolver) Delete(ctx context.Context, name string) (*bool, error) {
+	panic(fmt.Errorf("not implemented: Delete - Delete"))
+}
+
+// Allpokemon is the resolver for the Allpokemon field.
+func (r *queryResolver) Allpokemon(ctx context.Context) ([]*model.Pokemon, error) {
+	panic(fmt.Errorf("not implemented: Allpokemon - Allpokemon"))
 }
 
 // Mutation returns MutationResolver implementation.
