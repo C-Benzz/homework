@@ -45,6 +45,13 @@ func deleteHttp(body map[string]any) {
 		log.Fatal(err)
 	}
 	client := &http.Client{}
+	/*
+		Always put timeout in http client to prevent request hanging
+		&http.Client{
+			Timeout: time.Second * 90,
+		}
+	*/
+
 	res, err1 := client.Do(req)
 	if err1 != nil {
 		log.Fatal(err1)
