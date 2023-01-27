@@ -20,5 +20,6 @@ func Execute() {
 }
 
 func init() {
+	// NOTE: What is this toggle flag?
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }

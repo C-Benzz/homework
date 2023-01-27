@@ -31,9 +31,12 @@ var postCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(postCmd)
+	// NOTE: Don't need to use PersistentFlags() here. Only Flags() is enough.
+	// Or if you want to use PersistenFlags(), you may do so at the rootCmd.
 	postCmd.PersistentFlags().String("json", "", "Construct JSON body of the POST request.")
 }
 
+// NOTE: Struct is not used.
 type Post struct {
 	Name string `json:"name"`
 }

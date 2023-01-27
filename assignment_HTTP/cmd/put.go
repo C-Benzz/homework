@@ -19,10 +19,12 @@ var putCmd = &cobra.Command{
 	Short: "putHttp",
 	Long:  `put: send a PUT request to a given URL.`,
 	Run: func(cmd *cobra.Command, args []string) {
+		// NOTE: Will this function work without --json?
 		flag, err := cmd.Flags().GetString("json")
 		if err != nil {
 			log.Fatal(err)
 		}
+
 		input := map[string]any{}
 		json.Unmarshal([]byte(flag), &input)
 		putHttp(input)
@@ -45,11 +47,11 @@ func putHttp(body map[string]any) {
 		log.Fatal(err)
 	}
 	client := &http.Client{}
-	res, err1 := client.Do(req)
+	res, err1 := client.Do(req) // NOTE: You don't need to declare another error (err1)
 	if err1 != nil {
 		log.Fatal(err1)
 	}
 	var resp map[string]any
-	json.NewDecoder(res.Body).Decode(&resp)
+	json.NewDecoder(res.Body).Decode(&resp) // NOTE: Should handle the error returned from the Decode function
 	fmt.Printf("%v\n", resp)
 }
