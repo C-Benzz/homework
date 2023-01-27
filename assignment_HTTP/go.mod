@@ -1,4 +1,4 @@
-module github.com/C-Benzz/homeworkhttp
+module github.com/C-Benzz/httpcli
 
 go 1.19
 
