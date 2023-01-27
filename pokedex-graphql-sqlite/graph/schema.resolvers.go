@@ -6,33 +6,50 @@ package graph
 
 import (
 	"context"
-	"fmt"
 	"pokedex-graphql/graph/model"
 )
 
 // Create is the resolver for the Create field.
 func (r *mutationResolver) Create(ctx context.Context, input model.NewPokemon) (*model.Pokemon, error) {
-	// newPokemon := model.Pokemon{
-	// 	Name:        input.Name,
-	// 	Description: input.Description,
-
-	// }
-	panic(fmt.Errorf("not implemented: Update - Update"))
+	n := model.Pokemon{
+		Name:        input.Name,
+		Description: input.Description,
+		Category:    input.Category,
+		Type:        input.Type,
+		Abilities:   input.Abilities,
+	}
+	err := r.DB.CreatePokemon(&n)
+	if err != nil {
+		return nil, err
+	}
+	return &n, nil
 }
 
 // Update is the resolver for the Update field.
-func (r *mutationResolver) Update(ctx context.Context, input model.NewPokemon) (*model.Pokemon, error) {
-	panic(fmt.Errorf("not implemented: Update - Update"))
+func (r *mutationResolver) Update(ctx context.Context, input model.UpdatePokemon) (*model.Pokemon, error) {
+	Pokemon := model.Pokemon{
+		Name:        *input.Name,
+		Description: *input.Description,
+	}
+	err := r.DB.UpdatePokemon(&Pokemon)
+	if err != nil {
+		return nil, err
+	}
+	return &Pokemon, nil
 }
 
 // Delete is the resolver for the Delete field.
-func (r *mutationResolver) Delete(ctx context.Context, name string) (*bool, error) {
-	panic(fmt.Errorf("not implemented: Delete - Delete"))
+func (r *mutationResolver) Delete(ctx context.Context, name string) (bool, error) {
+	err := r.DB.DeletePokemon(name)
+	if err != nil {
+		return false, err
+	}
+	return true, nil
 }
 
 // Allpokemon is the resolver for the Allpokemon field.
 func (r *queryResolver) Allpokemon(ctx context.Context) ([]*model.Pokemon, error) {
-	panic(fmt.Errorf("not implemented: Allpokemon - Allpokemon"))
+	return r.DB.AllPokemon(), nil
 }
 
 // Mutation returns MutationResolver implementation.

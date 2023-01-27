@@ -4,7 +4,7 @@
 
 type Pokemon {
   name: String!
-  description: String
+  description: String!
   category: String!
   type: [PokemonType!]!
   abilities: [String!]!
@@ -20,11 +20,16 @@ enum PokemonType{
 }
 
 input NewPokemon{
-  name: String
+  name: String!
   description: String!
-  category: String
-  type: [PokemonType!]
-  abilities: [String!]
+  category: String!
+  type: [PokemonType!]!
+  abilities: [String!]!
+}
+
+input UpdatePokemon{
+  name: String
+  description: String
 }
 
 type Query{
@@ -33,6 +38,6 @@ type Query{
 
 type Mutation {
   Create(input: NewPokemon!): Pokemon
-  Update(input: NewPokemon!): Pokemon
-  Delete(name:String!): Boolean
+  Update(input: UpdatePokemon!): Pokemon
+  Delete(name:String!): Boolean!
 }

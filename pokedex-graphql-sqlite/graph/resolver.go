@@ -13,7 +13,16 @@ type Database struct {
 	pokemon map[string]model.Pokemon
 }
 
+func NewDatabase() Database {
+	var data = make(map[string]model.Pokemon)
+	return Database{data}
+}
+
 func (db *Database) CreatePokemon(input *model.Pokemon) error {
+	if input.Name == "" {
+		return fmt.Errorf("pokemon: %s was not found", input.Name)
+	}
+
 	db.pokemon[input.Name] = *input
 	return nil
 }
