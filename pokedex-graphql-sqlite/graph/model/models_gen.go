@@ -9,6 +9,7 @@ import (
 )
 
 type NewPokemon struct {
+	ID          *string       `json:"id"`
 	Name        string        `json:"name"`
 	Description string        `json:"description"`
 	Category    string        `json:"category"`
@@ -17,16 +18,12 @@ type NewPokemon struct {
 }
 
 type Pokemon struct {
+	ID          string        `json:"id"`
 	Name        string        `json:"name"`
 	Description string        `json:"description"`
 	Category    string        `json:"category"`
 	Type        []PokemonType `json:"type"`
 	Abilities   []string      `json:"abilities"`
-}
-
-type UpdatePokemon struct {
-	Name        *string `json:"name"`
-	Description *string `json:"description"`
 }
 
 type PokemonType string

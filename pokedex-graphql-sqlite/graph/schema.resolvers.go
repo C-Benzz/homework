@@ -6,32 +6,48 @@ package graph
 
 import (
 	"context"
+	"fmt"
 	"pokedex-graphql/graph/model"
 )
 
 // Create is the resolver for the Create field.
 func (r *mutationResolver) Create(ctx context.Context, input model.NewPokemon) (*model.Pokemon, error) {
-	n := model.Pokemon{
+	if input.ID != nil {
+		return nil, fmt.Errorf("id must be null")
+	}
+	Pokemon := model.Pokemon{
 		Name:        input.Name,
 		Description: input.Description,
 		Category:    input.Category,
 		Type:        input.Type,
 		Abilities:   input.Abilities,
 	}
-	err := r.DB.CreatePokemon(&n)
+	err := r.DB.CreatePokemon(&Pokemon)
 	if err != nil {
 		return nil, err
 	}
-	return &n, nil
+	return &Pokemon, nil
 }
 
 // Update is the resolver for the Update field.
-func (r *mutationResolver) Update(ctx context.Context, input model.UpdatePokemon) (*model.Pokemon, error) {
-	Pokemon := model.Pokemon{
-		Name:        *input.Name,
-		Description: *input.Description,
+func (r *mutationResolver) Update(ctx context.Context, input model.NewPokemon) (*model.Pokemon, error) {
+	if input.ID == nil {
+		return nil, fmt.Errorf("id must not be null")
 	}
-	err := r.DB.UpdatePokemon(&Pokemon)
+	Pokemon := model.Pokemon{
+		ID:          *input.ID,
+		Name:        input.Name,
+		Description: input.Description,
+		Category:    input.Category,
+		Type:        input.Type,
+		Abilities:   input.Abilities,
+	}
+	_, err := r.DB.PokemonByID(*input.ID)
+	if err != nil {
+		return nil, err
+	}
+
+	err = r.DB.UpdatePokemon(Pokemon)
 	if err != nil {
 		return nil, err
 	}
@@ -39,17 +55,22 @@ func (r *mutationResolver) Update(ctx context.Context, input model.UpdatePokemon
 }
 
 // Delete is the resolver for the Delete field.
-func (r *mutationResolver) Delete(ctx context.Context, name string) (bool, error) {
-	err := r.DB.DeletePokemon(name)
+func (r *mutationResolver) Delete(ctx context.Context, id string) (bool, error) {
+	err := r.DB.DeletePokemon(id)
 	if err != nil {
 		return false, err
 	}
 	return true, nil
 }
 
-// Allpokemon is the resolver for the Allpokemon field.
-func (r *queryResolver) Allpokemon(ctx context.Context) ([]*model.Pokemon, error) {
+// AllPokemon is the resolver for the AllPokemon field.
+func (r *queryResolver) AllPokemon(ctx context.Context) ([]*model.Pokemon, error) {
 	return r.DB.AllPokemon(), nil
+}
+
+// GetPokemonByID is the resolver for the GetPokemonByID field.
+func (r *queryResolver) GetPokemonByID(ctx context.Context, id string) (*model.Pokemon, error) {
+	return r.DB.PokemonByID(id)
 }
 
 // Mutation returns MutationResolver implementation.

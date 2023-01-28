@@ -3,6 +3,7 @@
 # https://gqlgen.com/getting-started/
 
 type Pokemon {
+  id: ID!
   name: String!
   description: String!
   category: String!
@@ -20,6 +21,7 @@ enum PokemonType{
 }
 
 input NewPokemon{
+  id: ID
   name: String!
   description: String!
   category: String!
@@ -27,17 +29,13 @@ input NewPokemon{
   abilities: [String!]!
 }
 
-input UpdatePokemon{
-  name: String
-  description: String
-}
-
 type Query{
-  Allpokemon:[Pokemon!]
+  AllPokemon:[Pokemon!]
+  GetPokemonByID(id:ID!):Pokemon
 }
 
 type Mutation {
   Create(input: NewPokemon!): Pokemon
-  Update(input: UpdatePokemon!): Pokemon
-  Delete(name:String!): Boolean!
+  Update(input: NewPokemon!): Pokemon
+  Delete(id:ID!): Boolean!
 }

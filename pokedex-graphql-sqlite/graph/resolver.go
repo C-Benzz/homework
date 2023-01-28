@@ -3,6 +3,8 @@ package graph
 import (
 	"fmt"
 	"pokedex-graphql/graph/model"
+
+	"github.com/google/uuid"
 )
 
 // This file will not be regenerated automatically.
@@ -19,36 +21,43 @@ func NewDatabase() Database {
 }
 
 func (db *Database) CreatePokemon(input *model.Pokemon) error {
-	if input.Name == "" {
-		return fmt.Errorf("pokemon: %s was not found", input.Name)
-	}
-
-	db.pokemon[input.Name] = *input
+	newID := uuid.New().String()
+	input.ID = newID
+	db.pokemon[newID] = *input
 	return nil
 }
 
-func (db *Database) UpdatePokemon(input *model.Pokemon) error {
-	if _, key := db.pokemon[input.Name]; !key {
+func (db *Database) UpdatePokemon(input model.Pokemon) error {
+	if _, key := db.pokemon[input.ID]; !key {
 		return fmt.Errorf("pokemon: %s was not found", input.Name)
 	}
-	db.pokemon[input.Name] = *input
+	db.pokemon[input.ID] = input
 	return nil
 }
 
-func (db *Database) DeletePokemon(name string) error {
-	if _, key := db.pokemon[name]; !key {
-		return fmt.Errorf("pokemon: %s was not found", name)
+func (db *Database) DeletePokemon(ID string) error {
+	if _, key := db.pokemon[ID]; !key {
+		return fmt.Errorf("pokemon: %s was not found", ID)
 	}
-	delete(db.pokemon, name)
+	delete(db.pokemon, ID)
 	return nil
 }
 
 func (db *Database) AllPokemon() []*model.Pokemon {
 	listPokemon := []*model.Pokemon{}
 	for _, n := range db.pokemon {
-		listPokemon = append(listPokemon, &n)
+		address := n
+		listPokemon = append(listPokemon, &address)
 	}
 	return listPokemon
+}
+
+func (db *Database) PokemonByID(ID string) (*model.Pokemon, error) {
+	if ret, ok := db.pokemon[ID]; ok {
+		return &ret, nil
+	} else {
+		return nil, fmt.Errorf("movie id: %s was not found", ID)
+	}
 }
 
 type Resolver struct {
