@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"net/http"
+	"pokedex-graphql/database"
 	"pokedex-graphql/graph"
 
 	"github.com/99designs/gqlgen/graphql/handler"
@@ -14,8 +15,13 @@ const defaultPort = "8080"
 
 func main() {
 	r := chi.NewRouter()
-
-	srv := handler.NewDefaultServer(graph.NewExecutableSchema(graph.Config{Resolvers: &graph.Resolver{DB: graph.NewDatabase()}}))
+	// establish connection
+	database.ConnectDB()
+	// create db
+	database.CreateDB()
+	// migrate the db with Pokemon model
+	database.MigrateDB()
+	srv := handler.NewDefaultServer(graph.NewExecutableSchema(graph.Config{Resolvers: &graph.Resolver{DB: database.DBInstance}}))
 	r.Handle("/", playground.Handler("GraphQL playground", "/query"))
 	r.Handle("/query", srv)
 

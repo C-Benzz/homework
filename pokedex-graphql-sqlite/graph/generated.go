@@ -46,8 +46,8 @@ type DirectiveRoot struct {
 type ComplexityRoot struct {
 	Mutation struct {
 		Create func(childComplexity int, input model.NewPokemon) int
-		Delete func(childComplexity int, id string) int
-		Update func(childComplexity int, input model.NewPokemon) int
+		Delete func(childComplexity int, id int) int
+		Update func(childComplexity int, id int, input model.NewPokemon) int
 	}
 
 	Pokemon struct {
@@ -67,8 +67,8 @@ type ComplexityRoot struct {
 
 type MutationResolver interface {
 	Create(ctx context.Context, input model.NewPokemon) (*model.Pokemon, error)
-	Update(ctx context.Context, input model.NewPokemon) (*model.Pokemon, error)
-	Delete(ctx context.Context, id string) (bool, error)
+	Update(ctx context.Context, id int, input model.NewPokemon) (*model.Pokemon, error)
+	Delete(ctx context.Context, id int) (bool, error)
 }
 type QueryResolver interface {
 	AllPokemon(ctx context.Context) ([]*model.Pokemon, error)
@@ -112,7 +112,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.Delete(childComplexity, args["id"].(string)), true
+		return e.complexity.Mutation.Delete(childComplexity, args["id"].(int)), true
 
 	case "Mutation.Update":
 		if e.complexity.Mutation.Update == nil {
@@ -124,7 +124,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.Update(childComplexity, args["input"].(model.NewPokemon)), true
+		return e.complexity.Mutation.Update(childComplexity, args["id"].(int), args["input"].(model.NewPokemon)), true
 
 	case "Pokemon.abilities":
 		if e.complexity.Pokemon.Abilities == nil {
@@ -293,10 +293,10 @@ func (ec *executionContext) field_Mutation_Create_args(ctx context.Context, rawA
 func (ec *executionContext) field_Mutation_Delete_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 string
+	var arg0 int
 	if tmp, ok := rawArgs["id"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-		arg0, err = ec.unmarshalNID2string(ctx, tmp)
+		arg0, err = ec.unmarshalNInt2int(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -308,15 +308,24 @@ func (ec *executionContext) field_Mutation_Delete_args(ctx context.Context, rawA
 func (ec *executionContext) field_Mutation_Update_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 model.NewPokemon
-	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalNNewPokemon2pokedexᚑgraphqlᚋgraphᚋmodelᚐNewPokemon(ctx, tmp)
+	var arg0 int
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+		arg0, err = ec.unmarshalNInt2int(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["input"] = arg0
+	args["id"] = arg0
+	var arg1 model.NewPokemon
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg1, err = ec.unmarshalNNewPokemon2pokedexᚑgraphqlᚋgraphᚋmodelᚐNewPokemon(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg1
 	return args, nil
 }
 
@@ -467,7 +476,7 @@ func (ec *executionContext) _Mutation_Update(ctx context.Context, field graphql.
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().Update(rctx, fc.Args["input"].(model.NewPokemon))
+		return ec.resolvers.Mutation().Update(rctx, fc.Args["id"].(int), fc.Args["input"].(model.NewPokemon))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -532,7 +541,7 @@ func (ec *executionContext) _Mutation_Delete(ctx context.Context, field graphql.
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().Delete(rctx, fc.Args["id"].(string))
+		return ec.resolvers.Mutation().Delete(rctx, fc.Args["id"].(int))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -598,9 +607,9 @@ func (ec *executionContext) _Pokemon_id(ctx context.Context, field graphql.Colle
 		}
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(int)
 	fc.Result = res
-	return ec.marshalNID2string(ctx, field.Selections, res)
+	return ec.marshalNInt2int(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Pokemon_id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -610,7 +619,7 @@ func (ec *executionContext) fieldContext_Pokemon_id(ctx context.Context, field g
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type ID does not have child fields")
+			return nil, errors.New("field of type Int does not have child fields")
 		},
 	}
 	return fc, nil
@@ -2862,21 +2871,13 @@ func (ec *executionContext) unmarshalInputNewPokemon(ctx context.Context, obj in
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"id", "name", "description", "category", "type", "abilities"}
+	fieldsInOrder := [...]string{"name", "description", "category", "type", "abilities"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
 			continue
 		}
 		switch k {
-		case "id":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-			it.ID, err = ec.unmarshalOID2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
 		case "name":
 			var err error
 
@@ -3464,6 +3465,21 @@ func (ec *executionContext) marshalNID2string(ctx context.Context, sel ast.Selec
 	return res
 }
 
+func (ec *executionContext) unmarshalNInt2int(ctx context.Context, v interface{}) (int, error) {
+	res, err := graphql.UnmarshalInt(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNInt2int(ctx context.Context, sel ast.SelectionSet, v int) graphql.Marshaler {
+	res := graphql.MarshalInt(v)
+	if res == graphql.Null {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+	}
+	return res
+}
+
 func (ec *executionContext) unmarshalNNewPokemon2pokedexᚑgraphqlᚋgraphᚋmodelᚐNewPokemon(ctx context.Context, v interface{}) (model.NewPokemon, error) {
 	res, err := ec.unmarshalInputNewPokemon(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -3873,22 +3889,6 @@ func (ec *executionContext) marshalOBoolean2ᚖbool(ctx context.Context, sel ast
 		return graphql.Null
 	}
 	res := graphql.MarshalBoolean(*v)
-	return res
-}
-
-func (ec *executionContext) unmarshalOID2ᚖstring(ctx context.Context, v interface{}) (*string, error) {
-	if v == nil {
-		return nil, nil
-	}
-	res, err := graphql.UnmarshalID(v)
-	return &res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalOID2ᚖstring(ctx context.Context, sel ast.SelectionSet, v *string) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	res := graphql.MarshalID(*v)
 	return res
 }
 

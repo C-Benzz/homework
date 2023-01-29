@@ -9,7 +9,6 @@ import (
 )
 
 type NewPokemon struct {
-	ID          *string       `json:"id"`
 	Name        string        `json:"name"`
 	Description string        `json:"description"`
 	Category    string        `json:"category"`
@@ -18,12 +17,12 @@ type NewPokemon struct {
 }
 
 type Pokemon struct {
-	ID          string        `json:"id"`
+	ID          int           `json:"id" gorm:"primary_key";gorm:"autoIncrement"`
 	Name        string        `json:"name"`
 	Description string        `json:"description"`
 	Category    string        `json:"category"`
-	Type        []PokemonType `json:"type"`
-	Abilities   []string      `json:"abilities"`
+	Type        []PokemonType `json:"type" gorm:"type:text[]"`
+	Abilities   []string      `json:"abilities" gorm:"type:text[]"`
 }
 
 type PokemonType string

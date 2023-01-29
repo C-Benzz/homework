@@ -6,15 +6,11 @@ package graph
 
 import (
 	"context"
-	"fmt"
 	"pokedex-graphql/graph/model"
 )
 
 // Create is the resolver for the Create field.
 func (r *mutationResolver) Create(ctx context.Context, input model.NewPokemon) (*model.Pokemon, error) {
-	if input.ID != nil {
-		return nil, fmt.Errorf("id must be null")
-	}
 	Pokemon := model.Pokemon{
 		Name:        input.Name,
 		Description: input.Description,
@@ -22,55 +18,64 @@ func (r *mutationResolver) Create(ctx context.Context, input model.NewPokemon) (
 		Type:        input.Type,
 		Abilities:   input.Abilities,
 	}
-	err := r.DB.CreatePokemon(&Pokemon)
-	if err != nil {
-		return nil, err
+	err := r.DB.Create(&Pokemon)
+	if err.Error != nil {
+		return nil, err.Error
 	}
 	return &Pokemon, nil
 }
 
 // Update is the resolver for the Update field.
-func (r *mutationResolver) Update(ctx context.Context, input model.NewPokemon) (*model.Pokemon, error) {
-	if input.ID == nil {
-		return nil, fmt.Errorf("id must not be null")
-	}
-	Pokemon := model.Pokemon{
-		ID:          *input.ID,
+func (r *mutationResolver) Update(ctx context.Context, id int, input model.NewPokemon) (*model.Pokemon, error) {
+	UpdatePokemon := model.Pokemon{
 		Name:        input.Name,
 		Description: input.Description,
 		Category:    input.Category,
 		Type:        input.Type,
 		Abilities:   input.Abilities,
 	}
-	_, err := r.DB.PokemonByID(*input.ID)
+
+	err := r.DB.Model(&model.Pokemon{}).Where("id=?", id).Updates(&UpdatePokemon).Error
 	if err != nil {
 		return nil, err
 	}
 
-	err = r.DB.UpdatePokemon(Pokemon)
-	if err != nil {
-		return nil, err
-	}
-	return &Pokemon, nil
+	return &UpdatePokemon, nil
 }
 
 // Delete is the resolver for the Delete field.
-func (r *mutationResolver) Delete(ctx context.Context, id string) (bool, error) {
-	err := r.DB.DeletePokemon(id)
-	if err != nil {
-		return false, err
+func (r *mutationResolver) Delete(ctx context.Context, id int) (bool, error) {
+	// err := r.DB.DeletePokemon(id)
+	// if err != nil {
+	// 	return false, err
+	// }
+	// return true, nil
+	// index := *model.Pokemon{}
+
+	err := r.DB.Model(&model.Pokemon{}).Where("id=?", id).Delete(&id)
+	if err.Error != nil {
+		return false, err.Error
 	}
 	return true, nil
 }
 
 // AllPokemon is the resolver for the AllPokemon field.
 func (r *queryResolver) AllPokemon(ctx context.Context) ([]*model.Pokemon, error) {
-	return r.DB.AllPokemon(), nil
+	All := []*model.Pokemon{}
+	GetAll := r.DB.Find(&All)
+	if GetAll.Error != nil {
+		return nil, GetAll.Error
+	}
+	return All, nil
 }
 
 // GetPokemonByID is the resolver for the GetPokemonByID field.
 func (r *queryResolver) GetPokemonByID(ctx context.Context, id string) (*model.Pokemon, error) {
-	return r.DB.PokemonByID(id)
+	PokemonByID := model.Pokemon{}
+	if err := r.DB.Model(&model.Pokemon{}).Find(&PokemonByID, id).Error; err != nil {
+		return nil, err
+	}
+	return &PokemonByID, nil
 }
 
 // Mutation returns MutationResolver implementation.
