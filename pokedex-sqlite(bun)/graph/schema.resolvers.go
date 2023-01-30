@@ -10,14 +10,29 @@ import (
 	"pokedex-bun/graph/model"
 )
 
-// CreateTodo is the resolver for the createTodo field.
-func (r *mutationResolver) CreateTodo(ctx context.Context, input model.NewTodo) (*model.Todo, error) {
-	panic(fmt.Errorf("not implemented: CreateTodo - createTodo"))
+// Create is the resolver for the Create field.
+func (r *mutationResolver) Create(ctx context.Context, input model.NewPokemon) (*model.Pokemon, error) {
+	panic(fmt.Errorf("not implemented: Create - Create"))
 }
 
-// Todos is the resolver for the todos field.
-func (r *queryResolver) Todos(ctx context.Context) ([]*model.Todo, error) {
-	panic(fmt.Errorf("not implemented: Todos - todos"))
+// Update is the resolver for the Update field.
+func (r *mutationResolver) Update(ctx context.Context, id int, input model.NewPokemon) (*model.Pokemon, error) {
+	panic(fmt.Errorf("not implemented: Update - Update"))
+}
+
+// Delete is the resolver for the Delete field.
+func (r *mutationResolver) Delete(ctx context.Context, id int) (bool, error) {
+	panic(fmt.Errorf("not implemented: Delete - Delete"))
+}
+
+// AllPokemon is the resolver for the AllPokemon field.
+func (r *queryResolver) AllPokemon(ctx context.Context) ([]*model.Pokemon, error) {
+	panic(fmt.Errorf("not implemented: AllPokemon - AllPokemon"))
+}
+
+// GetPokemonByID is the resolver for the GetPokemonByID field.
+func (r *queryResolver) GetPokemonByID(ctx context.Context, id string) (*model.Pokemon, error) {
+	panic(fmt.Errorf("not implemented: GetPokemonByID - GetPokemonByID"))
 }
 
 // Mutation returns MutationResolver implementation.

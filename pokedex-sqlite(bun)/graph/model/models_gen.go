@@ -2,19 +2,76 @@
 
 package model
 
-type NewTodo struct {
-	Text   string `json:"text"`
-	UserID string `json:"userId"`
+import (
+	"fmt"
+	"io"
+	"strconv"
+)
+
+type NewPokemon struct {
+	Name        string        `json:"name"`
+	Description string        `json:"description"`
+	Category    string        `json:"category"`
+	Type        []PokemonType `json:"type"`
+	Abilities   []string      `json:"abilities"`
 }
 
-type Todo struct {
-	ID   string `json:"id"`
-	Text string `json:"text"`
-	Done bool   `json:"done"`
-	User *User  `json:"user"`
+type Pokemon struct {
+	ID          int           `json:"id"`
+	Name        string        `json:"name"`
+	Description string        `json:"description"`
+	Category    string        `json:"category"`
+	Type        []PokemonType `json:"type"`
+	Abilities   []string      `json:"abilities"`
 }
 
-type User struct {
-	ID   string `json:"id"`
-	Name string `json:"name"`
+type PokemonType string
+
+const (
+	PokemonTypeBug      PokemonType = "Bug"
+	PokemonTypeFlying   PokemonType = "Flying"
+	PokemonTypeFire     PokemonType = "Fire"
+	PokemonTypeGrass    PokemonType = "Grass"
+	PokemonTypeWater    PokemonType = "Water"
+	PokemonTypePoison   PokemonType = "Poison"
+	PokemonTypeElectric PokemonType = "Electric"
+)
+
+var AllPokemonType = []PokemonType{
+	PokemonTypeBug,
+	PokemonTypeFlying,
+	PokemonTypeFire,
+	PokemonTypeGrass,
+	PokemonTypeWater,
+	PokemonTypePoison,
+	PokemonTypeElectric,
+}
+
+func (e PokemonType) IsValid() bool {
+	switch e {
+	case PokemonTypeBug, PokemonTypeFlying, PokemonTypeFire, PokemonTypeGrass, PokemonTypeWater, PokemonTypePoison, PokemonTypeElectric:
+		return true
+	}
+	return false
+}
+
+func (e PokemonType) String() string {
+	return string(e)
+}
+
+func (e *PokemonType) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("enums must be strings")
+	}
+
+	*e = PokemonType(str)
+	if !e.IsValid() {
+		return fmt.Errorf("%s is not a valid PokemonType", str)
+	}
+	return nil
+}
+
+func (e PokemonType) MarshalGQL(w io.Writer) {
+	fmt.Fprint(w, strconv.Quote(e.String()))
 }
