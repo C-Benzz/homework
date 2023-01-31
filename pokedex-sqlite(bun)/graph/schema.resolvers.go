@@ -45,7 +45,7 @@ func (r *queryResolver) AllPokemon(ctx context.Context) ([]*model.Pokemon, error
 }
 
 // GetPokemonByID is the resolver for the GetPokemonByID field.
-func (r *queryResolver) GetPokemonByID(ctx context.Context, id string) (*model.Pokemon, error) {
+func (r *queryResolver) GetPokemonByID(ctx context.Context, id int) (*model.Pokemon, error) {
 	return r.DB.GetPokemonByID(ctx, id)
 }
 

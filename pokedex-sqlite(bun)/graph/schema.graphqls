@@ -31,7 +31,7 @@ input NewPokemon{
 
 type Query{
   AllPokemon:[Pokemon!]
-  GetPokemonByID(id:ID!):Pokemon
+  GetPokemonByID(id:Int!):Pokemon
 }
 
 type Mutation {

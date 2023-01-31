@@ -71,7 +71,7 @@ func (d *DatabaseBun) AllPokemon(ctx context.Context) ([]*model.Pokemon, error) 
 	return pokemon, nil
 }
 
-func (d *DatabaseBun) GetPokemonByID(ctx context.Context, id string) (*model.Pokemon, error) {
+func (d *DatabaseBun) GetPokemonByID(ctx context.Context, id int) (*model.Pokemon, error) {
 	pokemon := new(model.Pokemon)
 	if err := d.db.NewSelect().Model(pokemon).Where("id = ?", id).Scan(ctx); err != nil {
 		return nil, err

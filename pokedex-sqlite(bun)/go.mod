@@ -4,6 +4,10 @@ go 1.19
 
 require (
 	github.com/99designs/gqlgen v0.17.24
+	github.com/uptrace/bun v1.1.10
+	github.com/uptrace/bun/dialect/sqlitedialect v1.1.10
+	github.com/uptrace/bun/driver/sqliteshim v1.1.10
+	github.com/uptrace/bun/extra/bundebug v1.1.10
 	github.com/vektah/gqlparser/v2 v2.5.1
 )
 
@@ -11,7 +15,6 @@ require (
 	github.com/agnivade/levenshtein v1.1.1 // indirect
 	github.com/dustin/go-humanize v1.0.1 // indirect
 	github.com/fatih/color v1.13.0 // indirect
-	github.com/go-chi/chi v1.5.4 // indirect
 	github.com/google/uuid v1.3.0 // indirect
 	github.com/gorilla/websocket v1.5.0 // indirect
 	github.com/hashicorp/golang-lru v0.5.4 // indirect
@@ -23,10 +26,6 @@ require (
 	github.com/mitchellh/mapstructure v1.5.0 // indirect
 	github.com/remyoudompheng/bigfft v0.0.0-20220927061507-ef77025ab5aa // indirect
 	github.com/tmthrgd/go-hex v0.0.0-20190904060850-447a3041c3bc // indirect
-	github.com/uptrace/bun v1.1.10 // indirect
-	github.com/uptrace/bun/dialect/sqlitedialect v1.1.10 // indirect
-	github.com/uptrace/bun/driver/sqliteshim v1.1.10 // indirect
-	github.com/uptrace/bun/extra/bundebug v1.1.10 // indirect
 	github.com/vmihailenco/msgpack/v5 v5.3.5 // indirect
 	github.com/vmihailenco/tagparser/v2 v2.0.0 // indirect
 	golang.org/x/mod v0.7.0 // indirect

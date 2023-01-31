@@ -61,7 +61,7 @@ type ComplexityRoot struct {
 
 	Query struct {
 		AllPokemon     func(childComplexity int) int
-		GetPokemonByID func(childComplexity int, id string) int
+		GetPokemonByID func(childComplexity int, id int) int
 	}
 }
 
@@ -72,7 +72,7 @@ type MutationResolver interface {
 }
 type QueryResolver interface {
 	AllPokemon(ctx context.Context) ([]*model.Pokemon, error)
-	GetPokemonByID(ctx context.Context, id string) (*model.Pokemon, error)
+	GetPokemonByID(ctx context.Context, id int) (*model.Pokemon, error)
 }
 
 type executableSchema struct {
@@ -185,7 +185,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.GetPokemonByID(childComplexity, args["id"].(string)), true
+		return e.complexity.Query.GetPokemonByID(childComplexity, args["id"].(int)), true
 
 	}
 	return 0, false
@@ -332,10 +332,10 @@ func (ec *executionContext) field_Mutation_Update_args(ctx context.Context, rawA
 func (ec *executionContext) field_Query_GetPokemonByID_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 string
+	var arg0 int
 	if tmp, ok := rawArgs["id"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-		arg0, err = ec.unmarshalNID2string(ctx, tmp)
+		arg0, err = ec.unmarshalNInt2int(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -913,7 +913,7 @@ func (ec *executionContext) _Query_GetPokemonByID(ctx context.Context, field gra
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().GetPokemonByID(rctx, fc.Args["id"].(string))
+		return ec.resolvers.Query().GetPokemonByID(rctx, fc.Args["id"].(int))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -3442,21 +3442,6 @@ func (ec *executionContext) unmarshalNBoolean2bool(ctx context.Context, v interf
 
 func (ec *executionContext) marshalNBoolean2bool(ctx context.Context, sel ast.SelectionSet, v bool) graphql.Marshaler {
 	res := graphql.MarshalBoolean(v)
-	if res == graphql.Null {
-		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
-			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
-		}
-	}
-	return res
-}
-
-func (ec *executionContext) unmarshalNID2string(ctx context.Context, v interface{}) (string, error) {
-	res, err := graphql.UnmarshalID(v)
-	return res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalNID2string(ctx context.Context, sel ast.SelectionSet, v string) graphql.Marshaler {
-	res := graphql.MarshalID(v)
 	if res == graphql.Null {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
