@@ -40,8 +40,11 @@ func (d *DatabaseBun) CreatePokemon(ctx context.Context, p model.Pokemon) (*mode
 	return &p, nil
 }
 
-func (d *DatabaseBun) UpdatePokemon(ctx context.Context, p model.Pokemon, index int) (*model.Pokemon, error) {
-	res, err := d.db.NewUpdate().Model(&p).Where("id = ?", index).Exec(ctx)
+func (d *DatabaseBun) UpdatePokemon(ctx context.Context, p model.Pokemon, id int) (*model.Pokemon, error) {
+	if _, errorid := d.GetPokemonByID(ctx, id); errorid != nil {
+		return nil, errorid
+	}
+	res, err := d.db.NewUpdate().Model(&p).Where("id = ?", id).Exec(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -52,6 +55,9 @@ func (d *DatabaseBun) UpdatePokemon(ctx context.Context, p model.Pokemon, index 
 func (d *DatabaseBun) DeletePokemon(ctx context.Context, id int) (bool, error) {
 	p := &model.Pokemon{
 		ID: id,
+	}
+	if _, errorid := d.GetPokemonByID(ctx, id); errorid != nil {
+		return false, errorid
 	}
 	res, err := d.db.NewDelete().Model(p).Where("id = ?", id).Exec(ctx)
 	if err != nil {
