@@ -12,7 +12,15 @@ import (
 
 // Create is the resolver for the Create field.
 func (r *mutationResolver) Create(ctx context.Context, input model.NewPokemon) (*model.Pokemon, error) {
-	panic(fmt.Errorf("not implemented: Create - Create"))
+	Pokemon := &model.Pokemon{
+		Name:        input.Name,
+		Description: input.Description,
+		Category:    input.Category,
+		Type:        input.Type,
+		Abilities:   input.Abilities,
+	}
+	r.DB.CreatePokemon(ctx, *Pokemon)
+	return Pokemon, nil
 }
 
 // Update is the resolver for the Update field.
@@ -27,7 +35,7 @@ func (r *mutationResolver) Delete(ctx context.Context, id int) (bool, error) {
 
 // AllPokemon is the resolver for the AllPokemon field.
 func (r *queryResolver) AllPokemon(ctx context.Context) ([]*model.Pokemon, error) {
-	panic(fmt.Errorf("not implemented: AllPokemon - AllPokemon"))
+	return []*model.Pokemon{}, nil
 }
 
 // GetPokemonByID is the resolver for the GetPokemonByID field.

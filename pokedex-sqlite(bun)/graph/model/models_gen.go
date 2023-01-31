@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"strconv"
+	"github.com/uptrace/bun"
 )
 
 type NewPokemon struct {
@@ -17,12 +18,13 @@ type NewPokemon struct {
 }
 
 type Pokemon struct {
-	ID          int           `json:"id"`
-	Name        string        `json:"name"`
-	Description string        `json:"description"`
-	Category    string        `json:"category"`
-	Type        []PokemonType `json:"type"`
-	Abilities   []string      `json:"abilities"`
+	bun.BaseModel `bun:"table:pokemon,alias:u"`
+	ID          int           `json:"id" bun:"id,pk,autoincrement"`
+	Name        string        `json:"name" bun:"name,notnull"`
+	Description string        `json:"description" bun:"description,notnull"`
+	Category    string        `json:"category" bun:"category,notnull"`
+	Type        []PokemonType `json:"type" bun:"type,notnull"`
+	Abilities   []string      `json:"abilities" bun:"abilities,notnull"`
 }
 
 type PokemonType string

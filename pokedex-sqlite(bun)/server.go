@@ -4,6 +4,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"pokedex-bun/database"
 	"pokedex-bun/graph"
 
 	"github.com/99designs/gqlgen/graphql/handler"
@@ -17,8 +18,16 @@ func main() {
 	if port == "" {
 		port = defaultPort
 	}
-
-	srv := handler.NewDefaultServer(graph.NewExecutableSchema(graph.Config{Resolvers: &graph.Resolver{}}))
+	// database.ConnectDatabse()
+	srv := handler.NewDefaultServer(
+		graph.NewExecutableSchema(
+			graph.Config{
+				Resolvers: &graph.Resolver{
+					DB: database.ConnectDatabase(),
+				},
+			},
+		),
+	)
 
 	http.Handle("/", playground.Handler("GraphQL playground", "/query"))
 	http.Handle("/query", srv)
