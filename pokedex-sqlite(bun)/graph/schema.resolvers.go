@@ -25,14 +25,14 @@ func (r *mutationResolver) Create(ctx context.Context, input model.NewPokemon) (
 // Update is the resolver for the Update field.
 func (r *mutationResolver) Update(ctx context.Context, id int, input model.NewPokemon) (*model.Pokemon, error) {
 	UpdatePokemon := &model.Pokemon{
+		ID:          id,
 		Name:        input.Name,
 		Description: input.Description,
 		Category:    input.Category,
 		Type:        input.Type,
 		Abilities:   input.Abilities,
 	}
-	r.DB.UpdatePokemon(ctx, *UpdatePokemon, id)
-	return UpdatePokemon, nil
+	return r.DB.UpdatePokemon(ctx, *UpdatePokemon, id)
 }
 
 // Delete is the resolver for the Delete field.
