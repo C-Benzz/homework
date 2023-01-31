@@ -6,7 +6,6 @@ package graph
 
 import (
 	"context"
-	"fmt"
 	"pokedex-bun/graph/model"
 )
 
@@ -47,7 +46,7 @@ func (r *queryResolver) AllPokemon(ctx context.Context) ([]*model.Pokemon, error
 
 // GetPokemonByID is the resolver for the GetPokemonByID field.
 func (r *queryResolver) GetPokemonByID(ctx context.Context, id string) (*model.Pokemon, error) {
-	panic(fmt.Errorf("not implemented: GetPokemonByID - GetPokemonByID"))
+	return r.DB.GetPokemonByID(ctx, id)
 }
 
 // Mutation returns MutationResolver implementation.

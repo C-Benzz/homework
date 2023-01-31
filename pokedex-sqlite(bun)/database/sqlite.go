@@ -62,11 +62,19 @@ func (d *DatabaseBun) DeletePokemon(ctx context.Context, id int) (bool, error) {
 }
 
 func (d *DatabaseBun) AllPokemon(ctx context.Context) ([]*model.Pokemon, error) {
-	pokemon := make([]*model.Pokemon, 0)
-	result, err := d.db.NewSelect().Model(&pokemon).Exec(ctx)
+	pokemon := []*model.Pokemon{}
+	err := d.db.NewSelect().Model(&pokemon).Scan(ctx)
 	if err != nil {
 		return nil, err
 	}
-	fmt.Printf("all pokemon: %v", result)
+	fmt.Printf("all pokemon: %v", pokemon)
+	return pokemon, nil
+}
+
+func (d *DatabaseBun) GetPokemonByID(ctx context.Context, id string) (*model.Pokemon, error) {
+	pokemon := new(model.Pokemon)
+	if err := d.db.NewSelect().Model(pokemon).Where("id = ?", id).Scan(ctx); err != nil {
+		return nil, err
+	}
 	return pokemon, nil
 }
