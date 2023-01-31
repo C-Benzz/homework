@@ -19,23 +19,30 @@ func (r *mutationResolver) Create(ctx context.Context, input model.NewPokemon) (
 		Type:        input.Type,
 		Abilities:   input.Abilities,
 	}
-	r.DB.CreatePokemon(ctx, *Pokemon)
-	return Pokemon, nil
+	return r.DB.CreatePokemon(ctx, *Pokemon)
 }
 
 // Update is the resolver for the Update field.
 func (r *mutationResolver) Update(ctx context.Context, id int, input model.NewPokemon) (*model.Pokemon, error) {
-	panic(fmt.Errorf("not implemented: Update - Update"))
+	UpdatePokemon := &model.Pokemon{
+		Name:        input.Name,
+		Description: input.Description,
+		Category:    input.Category,
+		Type:        input.Type,
+		Abilities:   input.Abilities,
+	}
+	r.DB.UpdatePokemon(ctx, *UpdatePokemon, id)
+	return UpdatePokemon, nil
 }
 
 // Delete is the resolver for the Delete field.
 func (r *mutationResolver) Delete(ctx context.Context, id int) (bool, error) {
-	panic(fmt.Errorf("not implemented: Delete - Delete"))
+	return r.DB.DeletePokemon(ctx, id)
 }
 
 // AllPokemon is the resolver for the AllPokemon field.
 func (r *queryResolver) AllPokemon(ctx context.Context) ([]*model.Pokemon, error) {
-	return []*model.Pokemon{}, nil
+	return r.DB.AllPokemon(ctx)
 }
 
 // GetPokemonByID is the resolver for the GetPokemonByID field.
