@@ -25,7 +25,7 @@ func ConnectDatabase() DatabaseBun {
 	}
 	db := bun.NewDB(sqldb, sqlitedialect.New())
 	db.AddQueryHook(bundebug.NewQueryHook(bundebug.WithVerbose(true)))
-	if _, err := db.NewCreateTable().Model((*model.Pokemon)(nil)).Exec(ctx); err != nil {
+	if _, err := db.NewCreateTable().IfNotExists().Model((*model.Pokemon)(nil)).Exec(ctx); err != nil {
 		panic(err)
 	}
 	return DatabaseBun{db}
