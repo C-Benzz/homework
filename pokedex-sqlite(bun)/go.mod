@@ -4,6 +4,7 @@ go 1.19
 
 require (
 	github.com/99designs/gqlgen v0.17.24
+	github.com/go-chi/chi v1.5.4
 	github.com/uptrace/bun v1.1.10
 	github.com/uptrace/bun/dialect/sqlitedialect v1.1.10
 	github.com/uptrace/bun/driver/sqliteshim v1.1.10
@@ -15,7 +16,6 @@ require (
 	github.com/agnivade/levenshtein v1.1.1 // indirect
 	github.com/dustin/go-humanize v1.0.1 // indirect
 	github.com/fatih/color v1.13.0 // indirect
-	github.com/go-chi/chi v1.5.4 // indirect
 	github.com/google/uuid v1.3.0 // indirect
 	github.com/gorilla/websocket v1.5.0 // indirect
 	github.com/hashicorp/golang-lru v0.5.4 // indirect

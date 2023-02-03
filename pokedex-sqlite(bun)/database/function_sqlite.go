@@ -4,7 +4,6 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
-	"pokedex-bun/graph/model"
 
 	"github.com/uptrace/bun"
 	"github.com/uptrace/bun/dialect/sqlitedialect"
@@ -25,13 +24,13 @@ func ConnectDatabase() DatabaseBun {
 	}
 	db := bun.NewDB(sqldb, sqlitedialect.New())
 	db.AddQueryHook(bundebug.NewQueryHook(bundebug.WithVerbose(true)))
-	if _, err := db.NewCreateTable().IfNotExists().Model((*model.Pokemon)(nil)).Exec(ctx); err != nil {
+	if _, err := db.NewCreateTable().IfNotExists().Model((*Pokemon)(nil)).Exec(ctx); err != nil {
 		panic(err)
 	}
 	return DatabaseBun{db}
 }
 
-func (d *DatabaseBun) CreatePokemon(ctx context.Context, p model.Pokemon) (*model.Pokemon, error) {
+func (d *DatabaseBun) CreatePokemon(ctx context.Context, p Pokemon) (*Pokemon, error) {
 	res, err := d.db.NewInsert().Model(&p).Exec(ctx)
 	if err != nil {
 		return nil, err
@@ -40,7 +39,7 @@ func (d *DatabaseBun) CreatePokemon(ctx context.Context, p model.Pokemon) (*mode
 	return &p, nil
 }
 
-func (d *DatabaseBun) UpdatePokemon(ctx context.Context, p model.Pokemon, id int) (*model.Pokemon, error) {
+func (d *DatabaseBun) UpdatePokemon(ctx context.Context, p Pokemon, id int) (*Pokemon, error) {
 	if _, errorid := d.GetPokemonByID(ctx, id); errorid != nil {
 		return nil, errorid
 	}
@@ -53,7 +52,7 @@ func (d *DatabaseBun) UpdatePokemon(ctx context.Context, p model.Pokemon, id int
 }
 
 func (d *DatabaseBun) DeletePokemon(ctx context.Context, id int) (bool, error) {
-	p := &model.Pokemon{
+	p := &Pokemon{
 		ID: id,
 	}
 	if _, errorid := d.GetPokemonByID(ctx, id); errorid != nil {
@@ -67,8 +66,8 @@ func (d *DatabaseBun) DeletePokemon(ctx context.Context, id int) (bool, error) {
 	return true, nil
 }
 
-func (d *DatabaseBun) AllPokemon(ctx context.Context) ([]*model.Pokemon, error) {
-	pokemon := []*model.Pokemon{}
+func (d *DatabaseBun) AllPokemon(ctx context.Context) ([]*Pokemon, error) {
+	pokemon := []*Pokemon{}
 	err := d.db.NewSelect().Model(&pokemon).Scan(ctx)
 	if err != nil {
 		return nil, err
@@ -77,8 +76,8 @@ func (d *DatabaseBun) AllPokemon(ctx context.Context) ([]*model.Pokemon, error) 
 	return pokemon, nil
 }
 
-func (d *DatabaseBun) GetPokemonByID(ctx context.Context, id int) (*model.Pokemon, error) {
-	pokemon := new(model.Pokemon)
+func (d *DatabaseBun) GetPokemonByID(ctx context.Context, id int) (*Pokemon, error) {
+	pokemon := new(Pokemon)
 	if err := d.db.NewSelect().Model(pokemon).Where("id = ?", id).Scan(ctx); err != nil {
 		return nil, err
 	}

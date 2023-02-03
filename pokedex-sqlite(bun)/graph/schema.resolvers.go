@@ -6,12 +6,12 @@ package graph
 
 import (
 	"context"
-	"pokedex-bun/graph/model"
+	"pokedex-bun/database"
 )
 
 // Create is the resolver for the Create field.
-func (r *mutationResolver) Create(ctx context.Context, input model.NewPokemon) (*model.Pokemon, error) {
-	Pokemon := &model.Pokemon{
+func (r *mutationResolver) Create(ctx context.Context, input database.NewPokemon) (*database.Pokemon, error) {
+	Pokemon := &database.Pokemon{
 		Name:        input.Name,
 		Description: input.Description,
 		Category:    input.Category,
@@ -22,8 +22,8 @@ func (r *mutationResolver) Create(ctx context.Context, input model.NewPokemon) (
 }
 
 // Update is the resolver for the Update field.
-func (r *mutationResolver) Update(ctx context.Context, id int, input model.NewPokemon) (*model.Pokemon, error) {
-	UpdatePokemon := &model.Pokemon{
+func (r *mutationResolver) Update(ctx context.Context, id int, input database.NewPokemon) (*database.Pokemon, error) {
+	UpdatePokemon := &database.Pokemon{
 		ID:          id,
 		Name:        input.Name,
 		Description: input.Description,
@@ -40,12 +40,12 @@ func (r *mutationResolver) Delete(ctx context.Context, id int) (bool, error) {
 }
 
 // AllPokemon is the resolver for the AllPokemon field.
-func (r *queryResolver) AllPokemon(ctx context.Context) ([]*model.Pokemon, error) {
+func (r *queryResolver) AllPokemon(ctx context.Context) ([]*database.Pokemon, error) {
 	return r.DB.AllPokemon(ctx)
 }
 
 // GetPokemonByID is the resolver for the GetPokemonByID field.
-func (r *queryResolver) GetPokemonByID(ctx context.Context, id int) (*model.Pokemon, error) {
+func (r *queryResolver) GetPokemonByID(ctx context.Context, id int) (*database.Pokemon, error) {
 	return r.DB.GetPokemonByID(ctx, id)
 }
 
