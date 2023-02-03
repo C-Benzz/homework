@@ -1,0 +1,17 @@
+version: '3'
+services:
+  some-postgres:
+    image: postgres:latest
+    container_name: postgres
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=mysecretpassword
+    ports:
+      - '5432:5432'
+  my-nginx:
+    image: pokedex-app:1.0
+    container_name: pokedex
+    ports:
+    - '8081:8080'
+    depends_on:
+    - some-postgres

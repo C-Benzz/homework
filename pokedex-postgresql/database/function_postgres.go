@@ -19,7 +19,7 @@ type DatabaseBun struct {
 var ctx = context.Background()
 
 func ConnectDatabase() DatabaseBun {
-	dsn := "postgres://postgres:mysecretpassword@localhost:5432/postgres?sslmode=disable"
+	dsn := "postgres://postgres:mysecretpassword@postgres:5432/postgres?sslmode=disable"
 	sqldb := sql.OpenDB(pgdriver.NewConnector(pgdriver.WithDSN(dsn)))
 	db := bun.NewDB(sqldb, pgdialect.New())
 	db.AddQueryHook(bundebug.NewQueryHook(bundebug.WithVerbose(true)))
