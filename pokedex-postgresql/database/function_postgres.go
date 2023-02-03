@@ -19,11 +19,11 @@ type DatabaseBun struct {
 var ctx = context.Background()
 
 func ConnectDatabase() DatabaseBun {
-	dsn := "postgres://postgres:@localhost:5432/test?sslmode=disable"
+	dsn := "postgres://postgres:mysecretpassword@localhost:5432/postgres?sslmode=disable"
 	sqldb := sql.OpenDB(pgdriver.NewConnector(pgdriver.WithDSN(dsn)))
 	db := bun.NewDB(sqldb, pgdialect.New())
 	db.AddQueryHook(bundebug.NewQueryHook(bundebug.WithVerbose(true)))
-	if _, err := db.NewCreateTable().Model((*model.Pokemon)(nil)).Exec(ctx); err != nil {
+	if _, err := db.NewCreateTable().IfNotExists().Model((*model.Pokemon)(nil)).Exec(ctx); err != nil {
 		panic(err)
 	}
 	return DatabaseBun{db}
