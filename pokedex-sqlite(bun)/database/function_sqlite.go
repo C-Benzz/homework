@@ -40,6 +40,8 @@ func (d *DatabaseBun) CreatePokemon(ctx context.Context, p Pokemon) (*Pokemon, e
 }
 
 func (d *DatabaseBun) UpdatePokemon(ctx context.Context, p Pokemon, id int) (*Pokemon, error) {
+	// errorid it's feel like this variable is a id of an error
+	// you might change it to `err` instead
 	if _, errorid := d.GetPokemonByID(ctx, id); errorid != nil {
 		return nil, errorid
 	}
