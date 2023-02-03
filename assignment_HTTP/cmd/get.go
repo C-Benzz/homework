@@ -37,18 +37,15 @@ var getCmd = &cobra.Command{
 		if err != nil {
 			log.Fatal(err)
 		}
-		// look line query and header flag is not handled in other http method
 		flagsQuery := strings.Join(flagQuery, "&")
 
 		flagHeader, err1 := cmd.Flags().GetStringSlice("header")
-		// no need to create an `err1` variable you can use `err`
 		if err1 != nil {
 			log.Fatal(err1)
 		}
 		flagsHeader := strings.Join(flagHeader, "&")
 
 		url := "https://httpbin.org/get"
-		// get should receive the url from input
 
 		if flagsQuery != "" {
 			getHttpWithFlagQuery(url, flagsQuery)
@@ -57,7 +54,6 @@ var getCmd = &cobra.Command{
 		} else {
 			getHttp(url)
 		}
-		// what if client need to set both query params and header
 	},
 }
 
@@ -74,16 +70,12 @@ func getHttp(url string) {
 	}
 	body, err := io.ReadAll(res.Body)
 	res.Body.Close()
-	// you can use `defer` to close the res body,
-	// Move this line to the line after `res, err := http.Get(url)`
-	// to make it easier to check that respond is closed after call the function
 	if res.StatusCode > 299 {
 		log.Fatalf("Response failed with status code: %d and\nbody: %s\n", res.StatusCode, body)
 	}
 	if err != nil {
 		log.Fatal(err)
 	}
-	// move this error checking block to the line after `body, err := io.ReadAll(res.Body)`
 	fmt.Printf("%s", body)
 }
 
@@ -106,12 +98,11 @@ func getHttpWithFlagQuery(url string, flag string) {
 	if err := json.Unmarshal(body, &data); err != nil {
 		fmt.Println("Can not unmarshal JSON")
 	}
-	fmt.Printf("%s\n", body)
+	fmt.Printf("%s\n", data.Args)
 }
 
 func getHttpWithFlagHeader(url string, flag string) {
 	urlGet := fmt.Sprintf("%s?%s", url, flag)
-	// this function should set request header not query params
 	res, err := http.Get(urlGet)
 	if err != nil {
 		log.Fatal(err)
@@ -128,8 +119,6 @@ func getHttpWithFlagHeader(url string, flag string) {
 
 	if err := json.Unmarshal(body, &data); err != nil {
 		fmt.Println("Can not unmarshal JSON")
-		// should panic or fatal this error
 	}
 	fmt.Printf("%#v\n", data.Headers)
-	// why this function print only header
 }
